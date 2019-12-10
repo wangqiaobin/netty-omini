@@ -1,6 +1,7 @@
 package com.wei.omini.request;
 
 import com.wei.omini.common.util.IdUtil;
+import com.wei.omini.configuration.RemoteProperties;
 import com.wei.omini.constants.Constants;
 import com.wei.omini.exception.NotFoundRegistryException;
 import com.wei.omini.handler.ServerContextHandler;
@@ -26,12 +27,15 @@ public class RemoteRequest {
     @Resource
     private ServiceDiscover discover;
 
+    @Resource
+    private RemoteProperties properties;
+
     public <T extends RequestContext> int request(String name, T data) {
         RemoteClient client = getRemoteClient(name);
         if (StringUtil.isNullOrEmpty(data.getVersion())) {
             data.setVersion(Constants.DEFAULT_VERSION);
         }
-        data.setServer(name);
+        data.setServer(properties.getName());
         data.setAck(false);
         if (StringUtil.isNullOrEmpty(data.getReq())) {
             data.setReq(IdUtil.buildHax(System.currentTimeMillis()));

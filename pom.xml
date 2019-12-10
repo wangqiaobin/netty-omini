@@ -10,7 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>omini-core</module>
-        <module>omini-http</module>
+        <module>omini-http-entry</module>
         <module>omini-common</module>
         <module>omini-server-demo</module>
     </modules>
@@ -46,6 +46,11 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring.boot.version}</version>
             </dependency>
             <!-- netty -->
@@ -85,6 +90,16 @@
             <dependency>
                 <groupId>com.wei.omini</groupId>
                 <artifactId>omini-common</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wei.omini</groupId>
+                <artifactId>omini-core</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wei.omini</groupId>
+                <artifactId>omini-http-entry</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
         </dependencies>

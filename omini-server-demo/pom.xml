@@ -19,6 +19,10 @@
         <dependency>
             <groupId>com.wei.omini</groupId>
             <artifactId>omini-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wei.omini</groupId>
+            <artifactId>omini-http-entry</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
