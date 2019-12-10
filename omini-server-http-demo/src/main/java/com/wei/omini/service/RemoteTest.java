@@ -15,7 +15,8 @@ import com.wei.omini.model.ServerInfo;
 public class RemoteTest extends AbstractRemoteServer implements IRemoteServer {
     @Override
     public int onRequest(ServerInfo server, RequestContext context) {
-        return 0;
+        context.setContent("111");
+        return response(server, context);
     }
 
     @Override

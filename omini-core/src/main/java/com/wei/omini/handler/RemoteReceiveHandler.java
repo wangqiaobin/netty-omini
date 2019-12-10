@@ -66,7 +66,7 @@ public class RemoteReceiveHandler extends SimpleChannelInboundHandler<RequestCon
             ServerInfo server = new ServerInfo();
             server.setHost(address.getHostString());
             server.setPort(address.getPort());
-            server.setName(request.getServer());
+            server.setName(request.getFrom());
             ServerContextHandler.getInstance().putContext(server, request);
             callable = new Callable() {
                 @Override

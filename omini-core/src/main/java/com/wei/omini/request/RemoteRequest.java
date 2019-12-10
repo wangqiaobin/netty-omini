@@ -35,7 +35,7 @@ public class RemoteRequest {
         if (StringUtil.isNullOrEmpty(data.getVersion())) {
             data.setVersion(Constants.DEFAULT_VERSION);
         }
-        data.setServer(properties.getName());
+        data.setFrom(properties.getName());
         data.setAck(false);
         if (StringUtil.isNullOrEmpty(data.getReq())) {
             data.setReq(IdUtil.buildHax(System.currentTimeMillis()));

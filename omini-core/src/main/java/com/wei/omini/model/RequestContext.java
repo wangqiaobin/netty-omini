@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Data
 public class RequestContext {
-    private String server;
+    private String from;
     private String req;
     private String cmd;
     private String sub;

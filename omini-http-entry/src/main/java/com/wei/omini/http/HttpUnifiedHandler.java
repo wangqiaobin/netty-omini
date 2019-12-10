@@ -73,7 +73,7 @@ public class HttpUnifiedHandler {
     private RequestContext buildRequestContext(String name, String cmd, String sub, String version, Map object) {
         RequestContext context = new RequestContext();
         context.setState(0);
-        context.setServer(name);
+        context.setFrom(name);
         context.setAck(false);
         context.setReq(IdUtil.buildHax());
         context.setCmd(cmd);
