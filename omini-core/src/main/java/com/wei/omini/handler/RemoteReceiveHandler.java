@@ -33,7 +33,6 @@ public class RemoteReceiveHandler extends SimpleChannelInboundHandler<RequestCon
                 continue;
             }
             if (ServerContextHandler.getInstance().hasRemoteServer(annotation.cmd(), annotation.sub(), annotation.version())) {
-                log.warn(String.format("duplicate logic interface cmd=%s sub=%s version=%s", annotation.cmd(), annotation.sub(), annotation.version()));
                 continue;
             }
             ServerContextHandler.getInstance().putRemoteServer(annotation.cmd(), annotation.sub(), annotation.version(), entry.getValue());
