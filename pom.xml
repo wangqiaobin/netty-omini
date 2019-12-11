@@ -12,6 +12,8 @@
         <module>omini-core</module>
         <module>omini-http-entry</module>
         <module>omini-common</module>
+        <module>http-entry-demo</module>
+        <module>async-service-demo</module>
     </modules>
     <properties>
         <spring.boot.version>2.0.0.RELEASE</spring.boot.version>

@@ -18,15 +18,15 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2019-11-21 15:47
  */
 @Slf4j
-public class RemoteClient {
+public class Client {
     private EventLoopGroup group = new NioEventLoopGroup();
 
     @Getter
-    private ServerInfo server = new ServerInfo();
+    private RemoteServer server = new RemoteServer();
     @Getter
     private Channel channel;
 
-    public RemoteClient(String name, String host, int port) {
+    public Client(String name, String host, int port) {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)

@@ -6,9 +6,9 @@ package com.wei.omini.model;
  * @date 2019-11-15 16:32
  */
 public interface IRemoteServer {
-    int onRequest(ServerInfo server, RequestContext context);
+    int onRequest(RemoteServer server, RemoteParam param);
 
-    int onTimeout(ServerInfo server, RequestContext context);
+    int onTimeout(RemoteServer server, RemoteParam param);
 
-    int onReceive(ServerInfo server, RequestContext context);
+    int onReceive(RemoteServer server, RemoteParam param);
 }

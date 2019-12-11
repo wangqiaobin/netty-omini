@@ -1,6 +1,6 @@
 package com.wei.omini.register;
 
-import com.wei.omini.model.RemoteClient;
+import com.wei.omini.model.Client;
 
 /**
  * @author qiaobinwang@qq.com
@@ -15,7 +15,7 @@ public interface ServiceDiscover {
      * @param name
      * @return
      */
-    RemoteClient discover(String name);
+    Client discover(String name);
 
-    RemoteClient discover(String name, String host, Integer port);
+    Client discover(String name, String host, Integer port);
 }

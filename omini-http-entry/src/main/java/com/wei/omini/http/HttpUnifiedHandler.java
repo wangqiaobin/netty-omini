@@ -1,11 +1,13 @@
 package com.wei.omini.http;
 
+import com.wei.omini.common.util.IPv4Util;
 import com.wei.omini.common.util.IdUtil;
+import com.wei.omini.configuration.RemoteProperties;
 import com.wei.omini.constants.Constants;
 import com.wei.omini.handler.ServerContextHandler;
-import com.wei.omini.model.RequestContext;
-import com.wei.omini.model.ServerInfo;
-import com.wei.omini.request.RemoteRequest;
+import com.wei.omini.model.Context;
+import com.wei.omini.model.RemoteParam;
+import com.wei.omini.model.RemoteServer;
 import com.wei.omini.util.ApplicationContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Callable;
@@ -32,54 +33,61 @@ import java.util.concurrent.Callable;
 public class HttpUnifiedHandler {
 
     @Resource
-    private RemoteRequest remote;
+    private RemoteProperties properties;
+    private final static String host = IPv4Util.getAddressIp();
 
     @RequestMapping(value = "get", method = RequestMethod.GET)
+
     public Callable<Object> unified(@RequestParam("_name") String name,
                                     @RequestParam("_cmd") String cmd,
                                     @RequestParam("_sub") String sub,
                                     @RequestParam(value = "_version", required = false, defaultValue = Constants.DEFAULT_VERSION) String version,
-                                    @RequestParam Map object,
-                                    HttpServletRequest request) {
+                                    @RequestParam Map object) {
+        object.remove("_name");
+        object.remove("_cmd");
+        object.remove("_sub");
+        object.remove("_version");
         return new Callable<Object>() {
             @Override
             public Object call() throws Exception {
-                ServerInfo info = buildServerInfo(name, request.getLocalAddr(), request.getLocalPort());
-                RequestContext context = buildRequestContext(name, cmd, sub, version, object);
-                ServerContextHandler.getInstance().putContext(info, context);
+                RemoteServer info = buildServerInfo(name, host, properties.getPort());
+                RemoteParam param = buildRequestContext(name, cmd, sub, version, object);
+                Context context = new Context();
+                context.setParam(param);
+                context.setState(1);
+                context.setTime(System.currentTimeMillis());
+                context.setServer(info);
+                ServerContextHandler.getInstance().putContext(context);
                 RemoteHttpHandler router = (RemoteHttpHandler) ServerContextHandler.getInstance().getRemoteServer("http-entry", "router", Constants.DEFAULT_VERSION);
                 if (Objects.isNull(router)) {
                     Map<String, RemoteHttpHandler> beans = ApplicationContextUtil.getBeansOfType(RemoteHttpHandler.class);
                     router = (RemoteHttpHandler) beans.values().toArray()[0];
                     ServerContextHandler.getInstance().putRemoteServer("http-entry", "router", Constants.DEFAULT_VERSION, router);
                 }
-                router.onRequest(info, context);
+                router.onRequest(info, param);
                 synchronized (context) {
                     context.wait();
                 }
-                return context.getContent();
+                return context.getParam();
             }
         };
     }
 
-    private ServerInfo buildServerInfo(String name, String host, Integer port) {
-        ServerInfo info = new ServerInfo();
+    private RemoteServer buildServerInfo(String name, String host, Integer port) {
+        RemoteServer info = new RemoteServer();
         info.setName(name);
         info.setHost(host);
         info.setPort(port);
         return info;
     }
 
-    private RequestContext buildRequestContext(String name, String cmd, String sub, String version, Map object) {
-        RequestContext context = new RequestContext();
+    private RemoteParam buildRequestContext(String name, String cmd, String sub, String version, Map object) {
+        RemoteParam context = new RemoteParam();
         context.setState(0);
-        context.setFrom(name);
-        context.setAck(false);
         context.setReq(IdUtil.buildHax());
         context.setCmd(cmd);
         context.setSub(sub);
         context.setVersion(version);
-        context.setTime(System.currentTimeMillis());
         context.setContent(object);
         return context;
     }

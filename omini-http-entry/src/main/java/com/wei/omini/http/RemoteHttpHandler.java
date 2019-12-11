@@ -2,10 +2,7 @@ package com.wei.omini.http;
 
 import com.wei.omini.annotation.Remote;
 import com.wei.omini.handler.ServerContextHandler;
-import com.wei.omini.model.AbstractRemoteServer;
-import com.wei.omini.model.IRemoteServer;
-import com.wei.omini.model.RequestContext;
-import com.wei.omini.model.ServerInfo;
+import com.wei.omini.model.*;
 
 /**
  * @author qiaobinwang@qq.com
@@ -14,26 +11,24 @@ import com.wei.omini.model.ServerInfo;
  */
 @Remote(cmd = "http-entry", sub = "router")
 public class RemoteHttpHandler extends AbstractRemoteServer implements IRemoteServer {
-
-
     @Override
-    public int onRequest(ServerInfo server, RequestContext context) {
-        return request(server.getName(), context.getCmd(), context.getSub(), context.getState(), context.getContent());
+    public int onRequest(RemoteServer server, RemoteParam param) {
+        return request(server.getName(), param.getCmd(), param.getSub(), param.getState(), param);
     }
 
     @Override
-    public int onTimeout(ServerInfo server, RequestContext context) {
-        ServerContextHandler.Context buffer = ServerContextHandler.getInstance().getContext(context.getReq());
-        buffer.getRequest().setContent(null);
-        buffer.getRequest().notify();
+    public int onTimeout(RemoteServer server, RemoteParam param) {
+        Context context = ServerContextHandler.getInstance().getContext(param.getReq());
+        context.setParam(null);
+        context.notify();
         return 0;
     }
 
     @Override
-    public int onReceive(ServerInfo server, RequestContext context) {
-        ServerContextHandler.Context buffer = ServerContextHandler.getInstance().getContext(context.getReq());
-        buffer.getRequest().setContent(context.getContent());
-        buffer.getRequest().notify();
+    public int onReceive(RemoteServer server, RemoteParam param) {
+        Context context = ServerContextHandler.getInstance().getContext(param.getReq());
+        context.setParam(param);
+        context.notify();
         return 0;
     }
 }

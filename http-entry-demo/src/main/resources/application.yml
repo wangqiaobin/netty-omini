@@ -1,0 +1,6 @@
+spring:
+  remote:
+    rpc:
+      zookeeper: 192.168.5.231:2181
+      port: 9000
+      name: http-entry-demo

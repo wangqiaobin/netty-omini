@@ -2,7 +2,7 @@ package com.wei.omini.configuration;
 
 import com.wei.omini.common.util.IPv4Util;
 import com.wei.omini.constants.Constants;
-import com.wei.omini.model.RemoteServer;
+import com.wei.omini.model.Server;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,8 +23,8 @@ public class RemoteConfiguration {
 
     @Bean(destroyMethod = "shutdown")
     @ConditionalOnMissingBean
-    public RemoteServer server() {
-        RemoteServer server = new RemoteServer();
+    public Server server() {
+        Server server = new Server();
         if (properties.getPort() == null) {
             properties.setPort(Constants.DEFAULT_PORT);
         }
