@@ -9,7 +9,7 @@ import lombok.Setter;
  * @date 2019-11-15 15:59
  */
 @Data
-public class RemoteParam {
+public class RemoteRequest {
     private String req;
     private String cmd;
     private String sub;

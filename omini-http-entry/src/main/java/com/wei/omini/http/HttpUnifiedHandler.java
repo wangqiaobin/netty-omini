@@ -6,7 +6,7 @@ import com.wei.omini.configuration.RemoteProperties;
 import com.wei.omini.constants.Constants;
 import com.wei.omini.handler.ServerContextHandler;
 import com.wei.omini.model.Context;
-import com.wei.omini.model.RemoteParam;
+import com.wei.omini.model.RemoteRequest;
 import com.wei.omini.model.RemoteServer;
 import com.wei.omini.util.ApplicationContextUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -51,11 +51,10 @@ public class HttpUnifiedHandler {
             @Override
             public Object call() throws Exception {
                 RemoteServer info = buildServerInfo(name, host, properties.getPort());
-                RemoteParam param = buildRequestContext(name, cmd, sub, version, object);
-                Context context = new Context();
+                RemoteRequest param = buildRequestContext(name, cmd, sub, version, object);
+                Context context = new Context(System.currentTimeMillis());
                 context.setParam(param);
                 context.setState(1);
-                context.setTime(System.currentTimeMillis());
                 context.setServer(info);
                 ServerContextHandler.getInstance().putContext(context);
                 RemoteHttpHandler router = (RemoteHttpHandler) ServerContextHandler.getInstance().getRemoteServer("http-entry", "router", Constants.DEFAULT_VERSION);
@@ -64,9 +63,10 @@ public class HttpUnifiedHandler {
                     router = (RemoteHttpHandler) beans.values().toArray()[0];
                     ServerContextHandler.getInstance().putRemoteServer("http-entry", "router", Constants.DEFAULT_VERSION, router);
                 }
+                log.info("unified {}", context);
                 router.onRequest(info, param);
-                synchronized (context) {
-                    context.wait();
+                synchronized (context.getTime()) {
+                    context.getTime().wait();
                 }
                 return context.getParam();
             }
@@ -81,8 +81,8 @@ public class HttpUnifiedHandler {
         return info;
     }
 
-    private RemoteParam buildRequestContext(String name, String cmd, String sub, String version, Map object) {
-        RemoteParam context = new RemoteParam();
+    private RemoteRequest buildRequestContext(String name, String cmd, String sub, String version, Map object) {
+        RemoteRequest context = new RemoteRequest();
         context.setState(0);
         context.setReq(IdUtil.buildHax());
         context.setCmd(cmd);

@@ -9,9 +9,13 @@ import lombok.Data;
  */
 @Data
 public class Context {
-    private Long time;
+    private final Long time;
     private Integer state;
     private String handler;
-    private RemoteParam param;
+    private RemoteRequest param;
     private RemoteServer server;
+
+    public Context(Long time) {
+        this.time = time;
+    }
 }

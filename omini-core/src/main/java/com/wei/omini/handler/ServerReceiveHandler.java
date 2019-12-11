@@ -38,35 +38,35 @@ public class ServerReceiveHandler extends SimpleChannelInboundHandler<Context> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Context request) {
-        IRemoteServer task = ServerContextHandler.getInstance().getRemoteServer(request.getParam().getCmd(), request.getParam().getSub(), request.getParam().getVersion());
+    protected void channelRead0(ChannelHandlerContext ctx, Context context) {
+        log.info("channelRead0 req={}", context);
+        IRemoteServer task = ServerContextHandler.getInstance().getRemoteServer(context);
         if (Objects.isNull(task)) {
             //返回调用错误
             return;
         }
         ThreadPoolTaskExecutor executor = ApplicationContextUtil.getBean(ThreadPoolTaskExecutor.class);
         Callable callable;
-        Context context = ServerContextHandler.getInstance().getContext(request.getParam().getReq());
-        if (Objects.nonNull(context)) {
+        Context buffer = ServerContextHandler.getInstance().getContext(context.getParam().getReq());
+        if (Objects.nonNull(buffer)) {
             callable = new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    log.info("receive request={}", request);
-                    return task.onReceive(context.getServer(), request.getParam());
+                    log.info("receive request={}", context);
+                    return task.onReceive(context.getServer(), context.getParam());
                 }
             };
         } else {
             //2为回包
-            if (request.getState().equals(2)) {
+            if (context.getState().equals(2)) {
                 return;
             }
-            request.setTime(System.currentTimeMillis());
-            ServerContextHandler.getInstance().putContext(request);
+            ServerContextHandler.getInstance().putContext(context);
             callable = new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    log.info("request request={}", request);
-                    return task.onRequest(request.getServer(), request.getParam());
+                    log.info("request={}", context);
+                    return task.onRequest(context.getServer(), context.getParam());
                 }
             };
         }
