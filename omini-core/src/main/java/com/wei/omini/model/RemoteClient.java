@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2019-11-21 15:47
  */
 @Slf4j
-public class Client {
+public class RemoteClient {
     private EventLoopGroup group = new NioEventLoopGroup();
 
     @Getter
@@ -26,7 +26,7 @@ public class Client {
     @Getter
     private Channel channel;
 
-    public Client(String name, String host, int port) {
+    public RemoteClient(String name, String host, int port) {
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
@@ -47,4 +47,5 @@ public class Client {
             e.printStackTrace();
         }
     }
+
 }

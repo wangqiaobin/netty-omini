@@ -51,7 +51,7 @@ public class ServerContextHandler {
                             ThreadUtil.sleep(10);
                         }
                     });
-//                    thread.start();
+                    thread.start();
                 }
             }
         }

@@ -3,7 +3,7 @@ package com.wei.omini.register.register;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.wei.omini.exception.NotFoundRegistryException;
-import com.wei.omini.model.Client;
+import com.wei.omini.model.RemoteClient;
 import com.wei.omini.register.ServiceDiscover;
 import com.wei.omini.util.RegisterUtils;
 import io.netty.util.internal.StringUtil;
@@ -27,7 +27,7 @@ public class ZookeeperDiscover implements ServiceDiscover, Watcher {
 
     private final Zookeeper zookeeper;
 
-    private final Map<String, List<Client>> remote = Maps.newConcurrentMap();
+    private static final Map<String, List<RemoteClient>> remote = Maps.newConcurrentMap();
 
     public ZookeeperDiscover(String address) {
         zookeeper = new ZooKeeperWrapper();
@@ -51,13 +51,13 @@ public class ZookeeperDiscover implements ServiceDiscover, Watcher {
     }
 
     @Override
-    public Client discover(String name) {
+    public RemoteClient discover(String name) {
         String path = RegisterUtils.getServiceFolderPath(name);
         if (StringUtil.isNullOrEmpty(path) || !zookeeper.exists(path)) {
             throw new NotFoundRegistryException(String
                     .format("not found service <%s> in zookeeper registry <%s>", name, zookeeper));
         }
-        List<Client> list = remote.getOrDefault(name, Lists.newArrayList());
+        List<RemoteClient> list = remote.getOrDefault(name, Lists.newArrayList());
         if (list.isEmpty()) {
             List<String> children = zookeeper.getChildren(path);
             if (Objects.isNull(children) || children.isEmpty()) {
@@ -71,7 +71,7 @@ public class ZookeeperDiscover implements ServiceDiscover, Watcher {
                 }
                 if (!list.contains(data)) {
                     String[] split = data.split(":");
-                    Client client = new Client(name, split[0], Integer.valueOf(split[1]));
+                    RemoteClient client = new RemoteClient(name, split[0], Integer.valueOf(split[1]));
                     list.add(client);
                 }
             }
@@ -81,14 +81,14 @@ public class ZookeeperDiscover implements ServiceDiscover, Watcher {
     }
 
     @Override
-    public Client discover(String name, String host, Integer port) {
-        List<Client> clients = remote.getOrDefault(name, Lists.newArrayList());
-        for (Client client : clients) {
+    public RemoteClient discover(String name, String host, Integer port) {
+        List<RemoteClient> clients = remote.getOrDefault(name, Lists.newArrayList());
+        for (RemoteClient client : clients) {
             if (client.getServer().getHost().equals(host) && client.getServer().getPort().equals(port)) {
                 return client;
             }
         }
-        Client client = new Client(name, host, port);
+        RemoteClient client = new RemoteClient(name, host, port);
         clients.add(client);
         return client;
     }

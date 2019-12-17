@@ -6,7 +6,7 @@ import com.wei.omini.configuration.RemoteProperties;
 import com.wei.omini.constants.Constants;
 import com.wei.omini.exception.NotFoundRegistryException;
 import com.wei.omini.handler.ServerContextHandler;
-import com.wei.omini.model.Client;
+import com.wei.omini.model.RemoteClient;
 import com.wei.omini.model.Context;
 import com.wei.omini.model.RemoteServer;
 import com.wei.omini.register.ServiceDiscover;
@@ -36,7 +36,7 @@ public class RemoteRequest {
 
 
     public <T extends com.wei.omini.model.RemoteRequest> int request(String name, T data) {
-        Client client = getRemoteClient(name);
+        RemoteClient client = getRemoteClient(name);
         if (StringUtil.isNullOrEmpty(data.getVersion())) {
             data.setVersion(Constants.DEFAULT_VERSION);
         }
@@ -54,7 +54,7 @@ public class RemoteRequest {
     }
 
     public <T extends com.wei.omini.model.RemoteRequest> int receive(String name, String host, Integer port, T data) {
-        Client client = getRemoteClient(name, host, port);
+        RemoteClient client = getRemoteClient(name, host, port);
         Context context = ServerContextHandler.getInstance().getContext(data.getReq());
         context.setState(2);
         context.setParam(data);
@@ -62,16 +62,16 @@ public class RemoteRequest {
         return 0;
     }
 
-    private Client getRemoteClient(String name) {
-        Client client = this.discover.discover(name);
+    private RemoteClient getRemoteClient(String name) {
+        RemoteClient client = this.discover.discover(name);
         if (Objects.isNull(client)) {
             throw new NotFoundRegistryException();
         }
         return client;
     }
 
-    private Client getRemoteClient(String name, String host, Integer port) {
-        Client client = this.discover.discover(name, host, port);
+    private RemoteClient getRemoteClient(String name, String host, Integer port) {
+        RemoteClient client = this.discover.discover(name, host, port);
         if (Objects.isNull(client)) {
             throw new NotFoundRegistryException();
         }
