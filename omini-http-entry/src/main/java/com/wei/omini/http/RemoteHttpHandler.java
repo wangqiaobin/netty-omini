@@ -12,26 +12,26 @@ import com.wei.omini.model.*;
 @Remote(cmd = "http-entry", sub = "router")
 public class RemoteHttpHandler extends AbstractRemoteServer implements IRemoteServer {
     @Override
-    public int onRequest(RemoteServer server, Context param) {
-        return request(server.getName(), param.getCmd(), param.getSub(), param.getState(), param);
+    public int onRequest(RemoteServer server, Context context) {
+        return request(server.getName(), context.getCmd(), context.getSub(), context.getState(), context);
     }
 
     @Override
-    public int onTimeout(RemoteServer server, Context param) {
-        InnerContext context = ServerContextHandler.getInstance().getContext(param.getReq());
-        context.setParam(null);
-        synchronized (context.getTime()) {
-            context.getTime().notify();
+    public int onTimeout(RemoteServer server, Context context) {
+        InnerContext inner = ServerContextHandler.getInstance().getContext(context.getReq());
+        inner.setContext(null);
+        synchronized (inner.getTime()) {
+            inner.getTime().notify();
         }
         return 0;
     }
 
     @Override
-    public int onReceive(RemoteServer server, Context param) {
-        InnerContext context = ServerContextHandler.getInstance().getContext(param.getReq());
-        context.setParam(param);
-        synchronized (context.getTime()) {
-            context.getTime().notify();
+    public int onReceive(RemoteServer server, Context context) {
+        InnerContext inner = ServerContextHandler.getInstance().getContext(context.getReq());
+        inner.setContext(context);
+        synchronized (inner.getTime()) {
+            inner.getTime().notify();
         }
         return 0;
     }

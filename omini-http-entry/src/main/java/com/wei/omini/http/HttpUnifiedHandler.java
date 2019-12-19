@@ -5,8 +5,8 @@ import com.wei.omini.common.util.IdUtil;
 import com.wei.omini.configuration.RemoteProperties;
 import com.wei.omini.constants.Constants;
 import com.wei.omini.handler.ServerContextHandler;
-import com.wei.omini.model.InnerContext;
 import com.wei.omini.model.Context;
+import com.wei.omini.model.InnerContext;
 import com.wei.omini.model.RemoteServer;
 import com.wei.omini.util.ApplicationContextUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +53,7 @@ public class HttpUnifiedHandler {
                 RemoteServer info = buildServerInfo(name, host, properties.getPort());
                 Context param = buildRequestContext(name, cmd, sub, version, object);
                 InnerContext context = new InnerContext(System.currentTimeMillis());
-                context.setParam(param);
+                context.setContext(param);
                 context.setState(1);
                 context.setServer(info);
                 ServerContextHandler.getInstance().putContext(context);
@@ -68,7 +68,7 @@ public class HttpUnifiedHandler {
                 synchronized (context.getTime()) {
                     context.getTime().wait();
                 }
-                return context.getParam();
+                return context.getContext();
             }
         };
     }

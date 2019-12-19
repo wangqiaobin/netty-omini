@@ -2,8 +2,8 @@ package com.wei.omini.handler;
 
 import com.wei.omini.annotation.Remote;
 import com.wei.omini.exception.DuplicateRemoteException;
-import com.wei.omini.model.InnerContext;
 import com.wei.omini.model.IRemoteServer;
+import com.wei.omini.model.InnerContext;
 import com.wei.omini.util.ApplicationContextUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -47,13 +47,13 @@ public class ServerReceiveHandler extends SimpleChannelInboundHandler<InnerConte
         }
         ThreadPoolTaskExecutor executor = ApplicationContextUtil.getBean(ThreadPoolTaskExecutor.class);
         Callable callable;
-        InnerContext buffer = ServerContextHandler.getInstance().getContext(context.getParam().getReq());
+        InnerContext buffer = ServerContextHandler.getInstance().getContext(context.getContext().getReq());
         if (Objects.nonNull(buffer)) {
             callable = new Callable() {
                 @Override
                 public Object call() throws Exception {
                     log.info("receive request={}", context);
-                    return task.onReceive(context.getServer(), context.getParam());
+                    return task.onReceive(context.getServer(), context.getContext());
                 }
             };
         } else {
@@ -66,7 +66,7 @@ public class ServerReceiveHandler extends SimpleChannelInboundHandler<InnerConte
                 @Override
                 public Object call() throws Exception {
                     log.info("request={}", context);
-                    return task.onRequest(context.getServer(), context.getParam());
+                    return task.onRequest(context.getServer(), context.getContext());
                 }
             };
         }

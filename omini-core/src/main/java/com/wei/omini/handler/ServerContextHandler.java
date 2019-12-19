@@ -42,8 +42,8 @@ public class ServerContextHandler {
                             for (Map.Entry<String, InnerContext> entry : instance.context.entrySet()) {
                                 InnerContext context = entry.getValue();
                                 if (millis - context.getTime() > 3000) {
-                                    IRemoteServer server = instance.getRemoteServer(entry.getValue().getParam().getCmd(), entry.getValue().getParam().getSub(), entry.getValue().getParam().getVersion());
-                                    server.onTimeout(entry.getValue().getServer(), entry.getValue().getParam());
+                                    IRemoteServer server = instance.getRemoteServer(entry.getValue().getContext().getCmd(), entry.getValue().getContext().getSub(), entry.getValue().getContext().getVersion());
+                                    server.onTimeout(entry.getValue().getServer(), entry.getValue().getContext());
                                     InnerContext buffer = instance.removeContext(entry.getKey());
                                     log.info("timeout request={}", entry.getValue());
                                 }
@@ -79,7 +79,7 @@ public class ServerContextHandler {
         if (!StringUtil.isNullOrEmpty(context.getHandler()) && context.getState().equals(2)) {
             return this.beans.getOrDefault(context.getHandler(), null);
         }
-        return getRemoteServer(context.getParam().getCmd(), context.getParam().getSub(), context.getParam().getVersion());
+        return getRemoteServer(context.getContext().getCmd(), context.getContext().getSub(), context.getContext().getVersion());
     }
 
     public String buildHandlerKey(String cmd, String sub, String version) {
@@ -87,8 +87,8 @@ public class ServerContextHandler {
     }
 
     public void putContext(InnerContext context) {
-        if (hasContext(context.getParam().getReq())) return;
-        this.context.put(context.getParam().getReq(), context);
+        if (hasContext(context.getContext().getReq())) return;
+        this.context.put(context.getContext().getReq(), context);
     }
 
     public boolean hasContext(String req) {

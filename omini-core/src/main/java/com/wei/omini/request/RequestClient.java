@@ -43,7 +43,7 @@ public class RequestClient {
         }
         RemoteServer server = new RemoteServer(name, host, properties.getPort());
         InnerContext context = new InnerContext(System.currentTimeMillis());
-        context.setParam(data);
+        context.setContext(data);
         context.setServer(server);
         context.setState(1);
         context.setHandler(ServerContextHandler.getInstance().getLocal().get());
@@ -58,7 +58,7 @@ public class RequestClient {
         RemoteClient client = getRemoteClient(name, host, port);
         InnerContext context = ServerContextHandler.getInstance().getContext(data.getReq());
         context.setState(2);
-        context.setParam(data);
+        context.setContext(data);
         client.getChannel().writeAndFlush(context);
         return 0;
     }

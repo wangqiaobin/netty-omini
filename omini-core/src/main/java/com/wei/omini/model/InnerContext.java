@@ -12,7 +12,7 @@ public class InnerContext {
     private final Long time;
     private Integer state;
     private String handler;
-    private Context param;
+    private Context context;
     private RemoteServer server;
 
     public InnerContext(Long time) {
