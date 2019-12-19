@@ -2,6 +2,7 @@ package com.wei.omini.model;
 
 import com.wei.omini.annotation.Remote;
 import com.wei.omini.handler.ServerContextHandler;
+import com.wei.omini.request.RequestClient;
 
 import javax.annotation.Resource;
 
@@ -13,15 +14,15 @@ import javax.annotation.Resource;
 public abstract class AbstractRemoteServer implements IRemoteServer {
 
     @Resource
-    private com.wei.omini.request.RemoteRequest request;
+    private RequestClient client;
 
     protected <T> int request(String name, String cmd, String sub, Integer state, T data) {
         Remote annotation = getClass().getAnnotation(Remote.class);
         ServerContextHandler.getInstance().getLocal().set(ServerContextHandler.getInstance().buildHandlerKey(annotation.cmd(), annotation.sub(), annotation.version()));
-        return request.request(name, (com.wei.omini.model.RemoteRequest) data);
+        return client.request(name, (Context) data);
     }
 
-    protected <T extends RemoteRequest> int response(RemoteServer server, T data) {
-        return request.receive(server.getName(), server.getHost(), server.getPort(), data);
+    protected <T extends Context> int response(RemoteServer server, T data) {
+        return client.receive(server.getName(), server.getHost(), server.getPort(), data);
     }
 }

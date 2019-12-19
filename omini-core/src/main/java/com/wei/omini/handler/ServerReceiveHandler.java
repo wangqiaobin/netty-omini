@@ -2,7 +2,7 @@ package com.wei.omini.handler;
 
 import com.wei.omini.annotation.Remote;
 import com.wei.omini.exception.DuplicateRemoteException;
-import com.wei.omini.model.Context;
+import com.wei.omini.model.InnerContext;
 import com.wei.omini.model.IRemoteServer;
 import com.wei.omini.util.ApplicationContextUtil;
 import io.netty.channel.ChannelHandlerContext;
@@ -21,7 +21,7 @@ import java.util.concurrent.Callable;
  * @date 2019-09-12 13:52
  */
 @Slf4j
-public class ServerReceiveHandler extends SimpleChannelInboundHandler<Context> {
+public class ServerReceiveHandler extends SimpleChannelInboundHandler<InnerContext> {
 
     public ServerReceiveHandler() throws DuplicateRemoteException {
         Map<String, IRemoteServer> beans = ApplicationContextUtil.getBeansOfType(IRemoteServer.class);
@@ -38,7 +38,7 @@ public class ServerReceiveHandler extends SimpleChannelInboundHandler<Context> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Context context) {
+    protected void channelRead0(ChannelHandlerContext ctx, InnerContext context) {
         log.info("channelRead0 req={}", context);
         IRemoteServer task = ServerContextHandler.getInstance().getRemoteServer(context);
         if (Objects.isNull(task)) {
@@ -47,7 +47,7 @@ public class ServerReceiveHandler extends SimpleChannelInboundHandler<Context> {
         }
         ThreadPoolTaskExecutor executor = ApplicationContextUtil.getBean(ThreadPoolTaskExecutor.class);
         Callable callable;
-        Context buffer = ServerContextHandler.getInstance().getContext(context.getParam().getReq());
+        InnerContext buffer = ServerContextHandler.getInstance().getContext(context.getParam().getReq());
         if (Objects.nonNull(buffer)) {
             callable = new Callable() {
                 @Override

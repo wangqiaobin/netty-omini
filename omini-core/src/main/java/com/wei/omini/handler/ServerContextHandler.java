@@ -1,7 +1,7 @@
 package com.wei.omini.handler;
 
 import com.wei.omini.common.util.ThreadUtil;
-import com.wei.omini.model.Context;
+import com.wei.omini.model.InnerContext;
 import com.wei.omini.model.IRemoteServer;
 import io.netty.util.internal.StringUtil;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class ServerContextHandler {
 
-    private final Map<String, Context> context = new ConcurrentHashMap<>();
+    private final Map<String, InnerContext> context = new ConcurrentHashMap<>();
     private final Map<String, IRemoteServer> beans = new ConcurrentHashMap<>();
     @Getter
     private final ThreadLocal<String> local = new ThreadLocal<>();
@@ -39,12 +39,12 @@ public class ServerContextHandler {
                                 continue;
                             }
                             long millis = System.currentTimeMillis();
-                            for (Map.Entry<String, Context> entry : instance.context.entrySet()) {
-                                Context context = entry.getValue();
+                            for (Map.Entry<String, InnerContext> entry : instance.context.entrySet()) {
+                                InnerContext context = entry.getValue();
                                 if (millis - context.getTime() > 3000) {
                                     IRemoteServer server = instance.getRemoteServer(entry.getValue().getParam().getCmd(), entry.getValue().getParam().getSub(), entry.getValue().getParam().getVersion());
                                     server.onTimeout(entry.getValue().getServer(), entry.getValue().getParam());
-                                    Context buffer = instance.removeContext(entry.getKey());
+                                    InnerContext buffer = instance.removeContext(entry.getKey());
                                     log.info("timeout request={}", entry.getValue());
                                 }
                             }
@@ -75,7 +75,7 @@ public class ServerContextHandler {
         return null;
     }
 
-    public IRemoteServer getRemoteServer(Context context) {
+    public IRemoteServer getRemoteServer(InnerContext context) {
         if (!StringUtil.isNullOrEmpty(context.getHandler()) && context.getState().equals(2)) {
             return this.beans.getOrDefault(context.getHandler(), null);
         }
@@ -86,7 +86,7 @@ public class ServerContextHandler {
         return cmd + sub + version;
     }
 
-    public void putContext(Context context) {
+    public void putContext(InnerContext context) {
         if (hasContext(context.getParam().getReq())) return;
         this.context.put(context.getParam().getReq(), context);
     }
@@ -95,12 +95,12 @@ public class ServerContextHandler {
         return context.containsKey(req);
     }
 
-    public Context removeContext(String req) {
+    public InnerContext removeContext(String req) {
         return context.remove(req);
     }
 
 
-    public Context getContext(String req) {
+    public InnerContext getContext(String req) {
         if (!context.containsKey(req)) {
             return null;
         }

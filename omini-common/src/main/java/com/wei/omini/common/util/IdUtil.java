@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * 分布式ID算法 TODO 简单实现，并未解决分布式ID问题
  * Created by wangqiaobin on 2016/12/22.
  */
 public class IdUtil {
