@@ -17,7 +17,7 @@ public class ExecutorConfiguration {
     public ThreadPoolTaskExecutor executor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(10);
-        executor.setMaxPoolSize(1000);
+        executor.setMaxPoolSize(20);
         executor.setQueueCapacity(10000);
         executor.setKeepAliveSeconds(3);
         executor.setThreadNamePrefix("work-");

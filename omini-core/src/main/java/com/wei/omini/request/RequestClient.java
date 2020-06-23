@@ -35,7 +35,6 @@ public class RequestClient {
 
     private final static String host = IPv4Util.getAddressIp();
 
-
     public <T extends Context> int request(String name, T data) {
         RemoteClient client = getRemoteClient(name);
         if (StringUtil.isNullOrEmpty(data.getVersion())) {

@@ -1,8 +1,8 @@
 package com.wei.omini.handler;
 
 import com.wei.omini.common.util.ThreadUtil;
-import com.wei.omini.model.InnerContext;
 import com.wei.omini.model.IRemoteServer;
+import com.wei.omini.model.InnerContext;
 import io.netty.util.internal.StringUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

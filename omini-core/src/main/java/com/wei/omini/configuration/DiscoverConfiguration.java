@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties(RemoteProperties.class)
 public class DiscoverConfiguration {
-
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(value = "spring.remote.rpc.zookeeper")
