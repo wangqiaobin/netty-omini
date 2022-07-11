@@ -16,7 +16,7 @@
         <module>async-service-demo</module>
     </modules>
     <properties>
-        <spring.boot.version>2.0.0.RELEASE</spring.boot.version>
+        <spring.boot.version>2.2.11.RELEASE</spring.boot.version>
         <netty.version>4.1.22.Final</netty.version>
         <swagger.version>2.7.0</swagger.version>
     </properties>
